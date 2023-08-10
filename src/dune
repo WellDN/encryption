@@ -1,0 +1,5 @@
+(executable
+  (public_name encryption)
+  (name encryption)
+  (modules encryption xor_cipher)
+  (libraries)) 
