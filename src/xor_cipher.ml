@@ -1,5 +1,3 @@
-(* TODO:  make a key generator with 32 length long *)
-(* TODO:  password generator *)
 (* TODO: AES *)
 let xor_cipher key text =
     let key_length = String.length key in

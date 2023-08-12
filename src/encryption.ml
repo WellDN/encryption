@@ -13,23 +13,31 @@ let write_file filename content =
     output_string oc content;
     close_out oc
 
-let encrypt inputf outputf key = 
-    let plaintext = read_file inputf in
+let rnd_key() =
+    let key_length = 32 in
+    let key = Bytes.create key_length in
+    for i = 0 to key_length - 1 do
+        (* generates random integer of 256 bits in a length of 32 (returns ascii as string) *)
+        Bytes.set key i (char_of_int (Random.int 256))
+    done;
+    Bytes.to_string key
+
+let encrypt input_file = 
+    let plaintext = read_file input_file in
+    let key = rnd_key() in
     let encrypted_text = xor_cipher key plaintext in
-    write_file outputf encrypted_text 
+    write_file input_file encrypted_text;
+    key
 
-let decrypt inputf outputf key =
-    let encrypted_text = read_file inputf in 
-    let decrypted_text = xor_cipher key encrypted_text in
-    write_file outputf decrypted_text
-(* actual pp later *)
 let _ =
-    let input_filename = "plaintext.txt" in
-    let encrypted_filename = "encrypted.txt" in
-    let decrypted_filename = "decrypted.txt" in
-    let encryption_key = "mysecretkey" in
+    if Array.length Sys.argv <> 2 then (
+        Format.eprintf "Usage: %s inputfile key\n" Sys.argv.(0);
+        exit 1
+        );
 
-    encrypt input_filename encrypted_filename encryption_key;
-    decrypt encrypted_filename decrypted_filename encryption_key; 
+    let input_file = Sys.argv.(1) in
 
-    print_endline "Encryption and decryption completed."
+    let encryption_key = encrypt input_file in
+
+    Format.printf "File %s was encrypted sucessfully.@." input_file;
+    Format.printf "Secret key: %s\n" encryption_key;
