@@ -5,4 +5,4 @@ File encryption transforms data into code that only intended recipients can deci
 
 It offers a higher security as each file has its on own encryption key, protecting confidential information and ensure that your files remain safe.
 
-The algorithm used in this encryption is XOR cipher for now, ill implement AES soon.
+The algorithm used in this encryption is XOR cipher for now, key is 32 length long (256 bits) which makes the key OTP, but there's other ways to break XOR cipher anyway. so ill implement AES soon.

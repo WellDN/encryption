@@ -14,6 +14,7 @@ let write_file filename content =
     close_out oc
 
 let rnd_key() =
+    Random.self_init ();
     let key_length = 32 in
     let key = Bytes.create key_length in
     for i = 0 to key_length - 1 do
@@ -22,22 +23,41 @@ let rnd_key() =
     done;
     Bytes.to_string key
 
-let encrypt input_file = 
-    let plaintext = read_file input_file in
-    let key = rnd_key() in
-    let encrypted_text = xor_cipher key plaintext in
-    write_file input_file encrypted_text;
-    key
+module Encrypt = struct
+   let encrypt input_file =
+       let plaintext = read_file input_file in
+       let key = rnd_key() in
+       let encrypted_text = xor_cipher key plaintext in
+       write_file input_file encrypted_text;
+       key
+end
 
-let _ =
-    if Array.length Sys.argv <> 2 then (
-        Format.eprintf "Usage: %s inputfile key\n" Sys.argv.(0);
-        exit 1
-        );
+module Decrypt = struct
+   let decrypt input_file key =
+       let plaintext = read_file input_file in
+       let decrypted_text = xor_cipher key plaintext in
+       write_file input_file decrypted_text
+end
 
-    let input_file = Sys.argv.(1) in
+   let () =
+       if Array.length Sys.argv <> 4 then (
+           Printf.eprintf "Usage: %s <encrypt/decrypt> <inputfile> <key>\n" Sys.argv.(0);
+    exit 1
+           );
 
-    let encryption_key = encrypt input_file in
+let command = Sys.argv.(1) in
+let input_file = Sys.argv.(2) in
+let key = Sys.argv.(3) in
 
-    Format.printf "File %s was encrypted sucessfully.@." input_file;
-    Format.printf "Secret key: %s\n" encryption_key;
+match command with
+| "encrypt" ->
+        let encryption_key = Encrypt.encrypt input_file in
+        Printf.printf "File %s was encrypted successfully.\n" input_file;
+    Printf.printf "Secret key: %s\n" encryption_key
+| "decrypt" ->
+        Decrypt.decrypt input_file key;
+    Printf.printf "File %s was decrypted successfully.\n" input_file
+| _ ->
+        Printf.eprintf "Unknown command: %s\n" command;
+    exit 1
+
