@@ -10,8 +10,8 @@ The algorithm used in this encryption is XOR cipher for now, key is 32 length lo
 
 # Testing
 ---------
-
-(you shouldn't actually use it for now. but if you want to test:)
+> **Warning**
+> (you shouldn't actually use it for now. but if you want to test:)
 
 
 Encryption: 
