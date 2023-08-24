@@ -1,4 +1,3 @@
-(* TODO: AES *)
 let xor_cipher key text =
     let key_length = String.length key in
     let text_length = String.length text in
